@@ -1,0 +1,1 @@
+MAX_LENGTH_SLUG = 50
