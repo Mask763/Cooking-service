@@ -1,7 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import ApplicationUser
+from users.models import ApplicationUser
 
 
-admin.site.register(ApplicationUser, UserAdmin)
+class ApplicationUserAdmin(UserAdmin):
+    model = ApplicationUser
+    search_fields = ('username', 'email')
+
+
+admin.site.register(ApplicationUser, ApplicationUserAdmin)

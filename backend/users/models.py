@@ -5,6 +5,8 @@ from .constatns import MAX_CHARFIELD_LENGTH, MAX_EMAIL_LENGTH, DEFAULT_AVATAR
 
 
 class ApplicationUser(AbstractUser):
+    """Модель пользователя."""
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = (
         'username',
@@ -41,14 +43,11 @@ class ApplicationUser(AbstractUser):
         verbose_name='Фамилия'
     )
     avatar = models.ImageField(
-        upload_to='media/users/',
+        upload_to='users/',
         blank=True,
         null=True,
         verbose_name='Аватар',
         default=DEFAULT_AVATAR
-    )
-    is_subscribed = models.BooleanField(
-        default=False,
     )
 
     class Meta:

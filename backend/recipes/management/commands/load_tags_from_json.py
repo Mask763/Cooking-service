@@ -1,7 +1,7 @@
 import json
 
 from django.core.management.base import BaseCommand
-from recipes.models import Ingredient
+from recipes.models import Tag
 
 
 class Command(BaseCommand):
@@ -17,9 +17,9 @@ class Command(BaseCommand):
             data = json.load(file)
 
             for item in data:
-                Ingredient.objects.create(
+                Tag.objects.create(
                     name=item['name'],
-                    measurement_unit=item['measurement_unit'],
+                    slug=item['slug'],
                 )
         self.stdout.write(
             self.style.SUCCESS('Successfully loaded ingredients from JSON')

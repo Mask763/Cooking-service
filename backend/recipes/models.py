@@ -1,14 +1,17 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from .constants import MAX_LENGTH_SLUG
+from recipes.constants import MAX_LENGTH_SLUG
 from users.constatns import MAX_CHARFIELD_LENGTH
+from recipes.constants import MAX_LENGTH_SHORT_URL
 
 
 User = get_user_model()
 
 
 class Tag(models.Model):
+    """Модель тегов."""
+
     name = models.CharField(
         max_length=MAX_CHARFIELD_LENGTH,
         unique=True,
@@ -30,6 +33,8 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
+    """Модель ингредиентов."""
+
     name = models.CharField(
         max_length=MAX_CHARFIELD_LENGTH,
         verbose_name='Название'
@@ -48,6 +53,8 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
+    """Модель рецептов."""
+
     author = models.ForeignKey(
         User, on_delete=models.CASCADE,
         verbose_name='Автор'
@@ -57,7 +64,7 @@ class Recipe(models.Model):
         verbose_name='Название'
     )
     image = models.ImageField(
-        upload_to='media/recipes/',
+        upload_to='recipes/',
         verbose_name='Картинка'
     )
     text = models.TextField(verbose_name='Описание')
@@ -73,6 +80,11 @@ class Recipe(models.Model):
         auto_now_add=True,
         db_index=True
     )
+    short_link = models.CharField(
+        max_length=MAX_LENGTH_SHORT_URL,
+        unique=True,
+        null=True
+    )
 
     class Meta:
         ordering = ['-pub_date']
@@ -85,6 +97,8 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
+    """Модель ингредиентов рецепта."""
+
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name='ingredients'
     )
