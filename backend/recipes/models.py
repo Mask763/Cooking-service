@@ -1,10 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from recipes.constants import MAX_LENGTH_SLUG
+from recipes.constants import MAX_LENGTH_SHORT_URL, MAX_LENGTH_SLUG
 from users.constatns import MAX_CHARFIELD_LENGTH
-from recipes.constants import MAX_LENGTH_SHORT_URL
-
 
 User = get_user_model()
 

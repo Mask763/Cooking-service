@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from .constatns import MAX_CHARFIELD_LENGTH, MAX_EMAIL_LENGTH, DEFAULT_AVATAR
+from .constatns import MAX_CHARFIELD_LENGTH, MAX_EMAIL_LENGTH
 
 
 class ApplicationUser(AbstractUser):
@@ -46,8 +46,7 @@ class ApplicationUser(AbstractUser):
         upload_to='users/',
         blank=True,
         null=True,
-        verbose_name='Аватар',
-        default=DEFAULT_AVATAR
+        verbose_name='Аватар'
     )
 
     class Meta:

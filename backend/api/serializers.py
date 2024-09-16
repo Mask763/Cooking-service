@@ -7,8 +7,7 @@ from rest_framework import serializers
 
 from api.constants import REQUIRED_FIELDS_FOR_UPDATE
 from follow.models import Follow
-from recipes.models import Ingredient, Recipe, Tag, RecipeIngredient
-
+from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
 User = get_user_model()
 

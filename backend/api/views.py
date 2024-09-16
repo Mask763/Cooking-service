@@ -1,34 +1,28 @@
-from io import StringIO
 import uuid
+from io import StringIO
 
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from rest_framework import status, permissions, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.pagination import WithLimitPagination
-from api.permissions import IsAuthorOrReadOnly
-from api.serializers import (
-    AvatarSerializer,
-    TagSerializer,
-    IngredientSerializer,
-    RecipeSerializer,
-    ItemSerializer,
-    FollowSerializer
-)
 from api.constants import BASE_URL_SHORT_LINK, MAX_LENGTH_SHORT_URL
 from api.filters import IngredientFilter, RecipesFilter
-from recipes.models import Tag, Ingredient, Recipe, RecipeIngredient
-from shopping_cart.models import ShoppingCart
+from api.pagination import WithLimitPagination
+from api.permissions import IsAuthorOrReadOnly
+from api.serializers import (AvatarSerializer, FollowSerializer,
+                             IngredientSerializer, ItemSerializer,
+                             RecipeSerializer, TagSerializer)
 from favorite.models import Favorite
 from follow.models import Follow
-
+from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
+from shopping_cart.models import ShoppingCart
 
 User = get_user_model()
 
