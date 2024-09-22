@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -11,8 +12,7 @@ class ApplicationUser(AbstractUser):
     REQUIRED_FIELDS = (
         'username',
         'first_name',
-        'last_name',
-        'password'
+        'last_name'
     )
 
     username = models.CharField(
@@ -34,12 +34,10 @@ class ApplicationUser(AbstractUser):
     )
     first_name = models.CharField(
         max_length=MAX_CHARFIELD_LENGTH,
-        blank=False,
         verbose_name='Имя'
     )
     last_name = models.CharField(
         max_length=MAX_CHARFIELD_LENGTH,
-        blank=False,
         verbose_name='Фамилия'
     )
     avatar = models.ImageField(
@@ -56,3 +54,34 @@ class ApplicationUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+User = get_user_model()
+
+
+class Follow(models.Model):
+    """Модель подписок."""
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name='follower', verbose_name='Пользователь'
+    )
+    following = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name='following', verbose_name='Подписан на'
+    )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        ordering = ('user',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'following'),
+                name='unique_follow'
+            ),
+            models.CheckConstraint(
+                check=~models.Q(user_id=models.F('following_id')),
+                name='cannot_follow_self'
+            )
+        ]

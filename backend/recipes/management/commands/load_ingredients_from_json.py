@@ -6,22 +6,16 @@ from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
-    def add_arguments(self, parser):
-        parser.add_argument(
-            'json_file', type=str, help='The JSON file to load'
-        )
+    """Команда для загрузки ингредиентов из JSON."""
 
     def handle(self, *args, **kwargs):
-        json_file = kwargs['json_file']
+        json_file_path = 'recipes/data/ingredients.json'
 
-        with open(json_file, 'r', encoding='utf-8') as file:
+        with open(json_file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
+            ingredients = [Ingredient(**item) for item in data]
+            Ingredient.objects.bulk_create(ingredients)
 
-            for item in data:
-                Ingredient.objects.create(
-                    name=item['name'],
-                    measurement_unit=item['measurement_unit'],
-                )
         self.stdout.write(
             self.style.SUCCESS('Successfully loaded ingredients from JSON')
         )

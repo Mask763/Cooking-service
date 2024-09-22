@@ -1,33 +1,28 @@
-import django_filters
+from django_filters import rest_framework as filters
 
 from recipes.models import Ingredient, Recipe, Tag
 
 
-class IngredientFilter(django_filters.FilterSet):
+class IngredientFilter(filters.FilterSet):
     """Фильтр для ингредиентов."""
 
-    name = django_filters.CharFilter(lookup_expr='istartswith')
+    name = filters.CharFilter(lookup_expr='istartswith')
 
     class Meta:
         model = Ingredient
         fields = ('name',)
 
 
-class RecipesFilter(django_filters.FilterSet):
+class RecipesFilter(filters.FilterSet):
     """Фильтр для рецептов."""
 
-    author = django_filters.NumberFilter(
-        field_name='author__id',
-        lookup_expr='exact',
-        label='Автор'
-    )
-    is_favorited = django_filters.NumberFilter(
+    is_favorited = filters.BooleanFilter(
         method='filter_by_user_relation'
     )
-    is_in_shopping_cart = django_filters.NumberFilter(
+    is_in_shopping_cart = filters.BooleanFilter(
         method='filter_by_user_relation'
     )
-    tags = django_filters.ModelMultipleChoiceFilter(
+    tags = filters.ModelMultipleChoiceFilter(
         field_name='tags__slug',
         to_field_name='slug',
         queryset=Tag.objects.all()
@@ -38,15 +33,10 @@ class RecipesFilter(django_filters.FilterSet):
         fields = ('author', 'tags', 'is_favorited', 'is_in_shopping_cart')
 
     def filter_by_user_relation(self, queryset, name, value):
-        value = int(value)
-
-        if value not in (0, 1):
-            raise ValueError('Значение фильтра должно быть 0 или 1')
-
         user = self.request.user
 
         if not user.is_authenticated:
-            return queryset.none() if value else queryset
+            return queryset
 
         if name == 'is_favorited':
             related_field = 'favorite__user'
@@ -55,6 +45,6 @@ class RecipesFilter(django_filters.FilterSet):
         else:
             return queryset
 
-        if value:
+        if value and user.is_authenticated:
             return queryset.filter(**{related_field: user})
-        return queryset.exclude(**{related_field: user})
+        return queryset
