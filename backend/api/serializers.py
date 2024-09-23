@@ -255,17 +255,13 @@ class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
         fields = ('user', 'recipe')
-
-    def validate(self, data):
-        user_id = data['user']
-        recipe_id = data['recipe']
-
-        if Favorite.objects.filter(user=user_id, recipe=recipe_id).exists():
-            raise serializers.ValidationError(
-                'Рецепт уже добавлен в избранное.'
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=Favorite.objects.all(),
+                fields=('user', 'recipe'),
+                message='Рецепт уже добавлен в избранное.'
             )
-
-        return data
+        ]
 
     def to_representation(self, instance):
         return RecipeShortSerializer(instance.recipe).data
@@ -277,19 +273,13 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingCart
         fields = ('user', 'recipe')
-
-    def validate(self, data):
-        user_id = data['user']
-        recipe_id = data['recipe']
-
-        if ShoppingCart.objects.filter(
-            user=user_id, recipe=recipe_id
-        ).exists():
-            raise serializers.ValidationError(
-                'Рецепт уже добавлен в список покупок.'
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=ShoppingCart.objects.all(),
+                fields=('user', 'recipe'),
+                message='Рецепт уже добавлен в список покупок.'
             )
-
-        return data
+        ]
 
     def to_representation(self, instance):
         return RecipeShortSerializer(instance.recipe).data
@@ -301,6 +291,13 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = ('user', 'following')
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=Follow.objects.all(),
+                fields=('user', 'following'),
+                message='Такая подписка уже существует.'
+            )
+        ]
 
     def validate(self, data):
         user_id = data['user']
@@ -309,13 +306,6 @@ class FollowSerializer(serializers.ModelSerializer):
         if user_id == following_id:
             raise serializers.ValidationError(
                 'Нельзя подписаться на себя.'
-            )
-
-        if Follow.objects.filter(
-            user=user_id, following=following_id
-        ).exists():
-            raise serializers.ValidationError(
-                'Такая подписка уже существует.'
             )
 
         return data

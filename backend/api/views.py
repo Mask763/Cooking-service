@@ -157,7 +157,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, pk=pk)
         return Response(
             {'short-link': (
-                request.build_absolute_uri('/')
+                request.build_absolute_uri('/s/')
                 + recipe.short_link
             )}
         )

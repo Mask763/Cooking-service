@@ -143,11 +143,18 @@ class RecipeIngredient(models.Model):
         return f"{self.ingredient.name} - {self.amount}"
 
 
-class ShoppingCart(models.Model):
-    """Список покупок."""
+class UserItemBase(models.Model):
+    """Базовая модель для списка покупок и избранного."""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class ShoppingCart(UserItemBase):
+    """Список покупок."""
 
     class Meta:
         verbose_name = 'Список покупок'
@@ -161,11 +168,8 @@ class ShoppingCart(models.Model):
         ]
 
 
-class Favorite(models.Model):
+class Favorite(UserItemBase):
     """Избранное."""
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Избранное'
