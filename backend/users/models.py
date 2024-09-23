@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from .constatns import MAX_CHARFIELD_LENGTH, MAX_EMAIL_LENGTH
+from users.constatns import MAX_CHARFIELD_LENGTH, MAX_EMAIL_LENGTH
 
 
 class ApplicationUser(AbstractUser):
